@@ -5,10 +5,6 @@ async function register(req, res, next) {
   try {
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-      throw new ApiError(400, "name, email, and password are required");
-    }
-
     const user = await registerUser({ name, email, password });
 
     return res.status(201).json({
@@ -24,10 +20,6 @@ async function register(req, res, next) {
 async function login(req, res, next) {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      throw new ApiError(400, "email and password are required");
-    }
 
     const result = await loginUser({ email, password });
 

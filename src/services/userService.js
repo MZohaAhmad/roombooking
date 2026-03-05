@@ -12,16 +12,23 @@ async function registerUser({ name, email, password }) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const [result] = await pool.query(
-    "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-    [name, email, hashedPassword]
-  );
+  try {
+    const [result] = await pool.query(
+      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+      [name, email, hashedPassword]
+    );
 
-  return {
-    id: result.insertId,
-    name,
-    email
-  };
+    return {
+      id: result.insertId,
+      name,
+      email
+    };
+  } catch (error) {
+    if (error && error.code === "ER_DUP_ENTRY") {
+      throw new ApiError(409, "Email is already registered");
+    }
+    throw error;
+  }
 }
 
 async function loginUser({ email, password }) {

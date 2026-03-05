@@ -5,4 +5,12 @@ async function listRooms() {
   return rooms;
 }
 
-module.exports = { listRooms };
+async function getRoomById(id) {
+  const [rows] = await pool.query(
+    "SELECT id, name, price_per_night FROM rooms WHERE id = ? LIMIT 1",
+    [id]
+  );
+  return rows[0] || null;
+}
+
+module.exports = { listRooms, getRoomById };
