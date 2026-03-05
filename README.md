@@ -142,3 +142,4 @@ See `architecture-notes.txt` for:
 - overlap prevention summary
 - concurrent booking behavior
 - future scaling approach
+# roombooking
