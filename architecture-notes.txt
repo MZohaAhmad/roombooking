@@ -1,0 +1,17 @@
+How overlapping bookings are prevented
+- Before inserting a booking, the API checks for any existing row in `bookings` for the same room where:
+  `existing.start_date <= requested.end_date AND existing.end_date >= requested.start_date`.
+- If any row matches, the system returns HTTP 409 with a clear conflict message.
+- This catches all overlap patterns, including partial overlap and full containment.
+
+What happens during simultaneous booking attempts
+- Booking creation runs inside a database transaction.
+- The selected room row is locked using `SELECT ... FOR UPDATE` before availability is checked and booking is inserted.
+- If two users attempt to book the same room for overlapping dates at the same time, one transaction gets the lock first, commits, and the second transaction sees the new conflicting booking and fails with 409.
+
+How the system can scale in the future
+- Horizontal API scaling: run multiple stateless Node.js instances behind a load balancer.
+- Add Redis for caching room lists and frequently requested availability checks.
+- Add pagination/filtering for rooms and bookings.
+- Add read replicas for reporting-heavy reads; keep writes on primary DB.
+- Add idempotency keys and retry-safe patterns for booking endpoint in high traffic scenarios.
