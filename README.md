@@ -129,6 +129,24 @@ Booking creation runs in a DB transaction:
 
 If any step fails, rollback is applied.
 
+## Testing
+
+1. Ensure MySQL is running and the main schema is applied.
+
+2. Copy env for tests (optional; defaults to `room_booking_test`):
+
+```bash
+cp .env.test.example .env.test
+```
+
+3. Run tests:
+
+```bash
+npm test
+```
+
+The test suite uses Jest + Supertest and covers health, auth, rooms, availability, booking create, routes, and date edge cases (~70 tests).
+
 ## Postman Collection
 
 Import:
